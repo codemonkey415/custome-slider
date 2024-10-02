@@ -18,9 +18,12 @@ const Slider: React.FC<SliderProps> = ({
   const [value, setValue] = useState(initialValue);
   const sliderRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<HTMLDivElement>(null);
+  const dropletRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setValue(initialValue);
+    handleRef.current!.style.left = `${handlePosition(initialValue)}px`;
+    dropletRef.current!.style.left = `${handlePosition(initialValue)}px`;
   }, [initialValue]);
 
   const handlePosition = (value: number) => {
@@ -86,14 +89,14 @@ const Slider: React.FC<SliderProps> = ({
         </span>
         <div
           ref={sliderRef}
-          className="relative w-full h-6 bg-gray-300 rounded-full"
+          className="relative w-full h-8 bg-gray-300 rounded-full"
           onMouseDown={handleDragStart}
           onTouchStart={handleDragStart}
         >
           <div className="relative">
             <div
               ref={handleRef}
-              className={`absolute top-0 border-[2px] border-white transform left-0 w-4 h-6 bg-[#B21BF9] rounded-full cursor-pointer ${
+              className={`absolute top-0 border-[2px] border-white transform -translate-y-[4px] left-0 w-4 h-10 bg-[#B21BF9] rounded-full cursor-pointer ${
                 showDroplet && "text-white flex items-center justify-center"
               }`}
               style={{ left: `${handlePosition(value)}px` }}
@@ -101,7 +104,8 @@ const Slider: React.FC<SliderProps> = ({
             {/* Water Drop */}
             {showDroplet && (
               <div
-                className="flex justify-center items-center h-8 w-8 absolute top-5 -translate-x-1/4 cursor-pointer"
+                ref={dropletRef}
+                className="flex justify-center items-center h-8 w-8 absolute top-10 -translate-x-1/4 cursor-pointer"
                 style={{
                   marginTop: "10px",
                   left: `${handlePosition(value)}px`,

@@ -1,23 +1,23 @@
 import React from "react";
 
 interface SliderHandleProps {
-  value: number;
   position: number;
   showDroplet: boolean;
+  value: number;
 }
 
 const SliderHandle: React.FC<SliderHandleProps> = React.forwardRef<
   HTMLDivElement,
   SliderHandleProps
->(({ value, position, showDroplet }, ref) => (
+>(({ position, showDroplet, value }, ref) => (
   <div
     ref={ref}
-    className={`absolute top-0 left-0 w-6 h-6 bg-blue-500 rounded-full cursor-pointer transform -translate-y-2/4 ${
-      showDroplet && "text-white flex items-center justify-center"
-    }`}
+    className={`absolute top-0 border-[2px] border-white transform left-0 w-4 h-6 bg-[#B21BF9] rounded-full cursor-pointer`}
     style={{ left: `${position}px` }}
   >
-    {showDroplet && <span className="text-sm">{value}</span>}
+    {showDroplet && (
+      <div className="text-white flex items-center justify-center">{value}</div>
+    )}
   </div>
 ));
 

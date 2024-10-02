@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Slider from "./components/Slider";
+import SliderControls from "./components/SliderControls";
 
 function App() {
   const [minValue, setMinValue] = useState(50);
   const [maxValue, setMaxValue] = useState(150);
   const [initialValue, setInitialValue] = useState(78);
+  const [debouncedMinValue, setDebouncedMinValue] = useState(78);
+  const [debouncedMaxValue, setDebouncedMaxValue] = useState(78);
   const [debouncedInitialValue, setDebouncedInitialValue] = useState(78);
   const [showMinMaxValues, setShowMinMaxValues] = useState(true);
   const [showDroplet, setShowDroplet] = useState(true);
@@ -17,6 +20,36 @@ function App() {
     return () => clearTimeout(timeoutId);
   }, [initialValue]);
 
+  // useEffect(() => {
+  //   const timeoutId = setTimeout(() => {
+  //     if (minValue < maxValue) setDebouncedMinValue(minValue);
+  //   }, 300);
+  //   return () => clearTimeout(timeoutId);
+  // }, [minValue]);
+
+  // useEffect(() => {
+  //   const timeoutId = setTimeout(() => {
+  //     if (maxValue > minValue) setDebouncedMaxValue(maxValue);
+  //   }, 300);
+  //   return () => clearTimeout(timeoutId);
+  // }, [maxValue]);
+
+  useEffect(() => {
+    const handleInitialValueBasedOnMinMax = () => {
+      if (
+        !(
+          debouncedInitialValue <= maxValue && debouncedInitialValue >= minValue
+        )
+      ) {
+        let value = Math.floor((minValue + maxValue) / 2);
+        setDebouncedInitialValue(value);
+        setInitialValue(value);
+      }
+    };
+
+    handleInitialValueBasedOnMinMax();
+  }, [minValue, maxValue]);
+
   return (
     <div className="App">
       <header className="mt-20">
@@ -25,63 +58,18 @@ function App() {
         </h1>
         <div>
           <div className="max-w-2xl mx-auto">
-            <div className="grid grid-cols-3 gap-4 items-center">
-              <div className="flex gap-2 items-center">
-                <span>Min: </span>
-                <input
-                  type="number"
-                  value={minValue}
-                  onChange={(e) => setMinValue(Number(e.target.value))}
-                  className="border rounded p-1 w-20"
-                />
-              </div>
-              <div className="flex gap-2 items-center">
-                <span>Max: </span>
-                <input
-                  type="number"
-                  value={maxValue}
-                  onChange={(e) => setMaxValue(Number(e.target.value))}
-                  className="border rounded p-1 w-20"
-                />
-              </div>
-              <div className="flex gap-2 items-center">
-                <span>Initial: </span>
-                <input
-                  type="number"
-                  value={initialValue}
-                  max={maxValue}
-                  onChangeCapture={(e) => {
-                    console.log(e);
-                  }}
-                  onChange={(e) => {
-                    Number(e.target.value) <= maxValue &&
-                      setInitialValue(Number(e.target.value));
-                  }}
-                  className="border rounded p-1"
-                />
-              </div>
-
-              <div className="flex gap-2 items-center">
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={showMinMaxValues}
-                    onChange={() => setShowMinMaxValues(!showMinMaxValues)}
-                  />
-                  Show Min/Max Values
-                </label>
-              </div>
-              <div className="flex gap-2 items-center">
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={showDroplet}
-                    onChange={() => setShowDroplet(!showDroplet)}
-                  />
-                  Show Droplet
-                </label>
-              </div>
-            </div>
+            <SliderControls
+              minValue={minValue}
+              maxValue={maxValue}
+              initialValue={initialValue}
+              setMinValue={setMinValue}
+              setMaxValue={setMaxValue}
+              setInitialValue={setInitialValue}
+              showMinMaxValues={showMinMaxValues}
+              setShowMinMaxValues={setShowMinMaxValues}
+              showDroplet={showDroplet}
+              setShowDroplet={setShowDroplet}
+            />
             <Slider
               min={minValue}
               max={maxValue}

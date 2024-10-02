@@ -6,7 +6,7 @@ const SliderTrack = React.forwardRef<
 >(({ children, ...props }, ref) => (
   <div
     ref={ref}
-    className="relative w-full h-2 bg-gray-300 rounded-full"
+    className="relative w-full h-6 bg-gray-300 rounded-full"
     {...props}
   >
     {children}
