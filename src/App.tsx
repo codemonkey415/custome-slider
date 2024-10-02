@@ -20,19 +20,14 @@ function App() {
     return () => clearTimeout(timeoutId);
   }, [initialValue]);
 
-  // useEffect(() => {
-  //   const timeoutId = setTimeout(() => {
-  //     if (minValue < maxValue) setDebouncedMinValue(minValue);
-  //   }, 300);
-  //   return () => clearTimeout(timeoutId);
-  // }, [minValue]);
-
-  // useEffect(() => {
-  //   const timeoutId = setTimeout(() => {
-  //     if (maxValue > minValue) setDebouncedMaxValue(maxValue);
-  //   }, 300);
-  //   return () => clearTimeout(timeoutId);
-  // }, [maxValue]);
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (maxValue > minValue) {
+        setDebouncedMaxValue(maxValue);
+      }
+    }, 300);
+    return () => clearTimeout(timeoutId);
+  }, [maxValue]);
 
   useEffect(() => {
     const handleInitialValueBasedOnMinMax = () => {
@@ -41,14 +36,14 @@ function App() {
           debouncedInitialValue <= maxValue && debouncedInitialValue >= minValue
         )
       ) {
-        let value = Math.floor((minValue + maxValue) / 2);
+        let value = Math.floor((minValue + debouncedMaxValue) / 2);
         setDebouncedInitialValue(value);
         setInitialValue(value);
       }
     };
 
     handleInitialValueBasedOnMinMax();
-  }, [minValue, maxValue]);
+  }, [minValue, maxValue, debouncedMaxValue]);
 
   return (
     <div className="App">
@@ -62,6 +57,8 @@ function App() {
               minValue={minValue}
               maxValue={maxValue}
               initialValue={initialValue}
+              debouncedInitialValue={debouncedInitialValue}
+              debouncedMaxValue={debouncedMaxValue}
               setMinValue={setMinValue}
               setMaxValue={setMaxValue}
               setInitialValue={setInitialValue}
@@ -72,7 +69,7 @@ function App() {
             />
             <Slider
               min={minValue}
-              max={maxValue}
+              max={debouncedMaxValue}
               initialValue={debouncedInitialValue}
               showMinMaxValues={showMinMaxValues}
               showDroplet={showDroplet}

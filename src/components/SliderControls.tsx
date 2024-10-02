@@ -4,6 +4,8 @@ interface SliderControlsProps {
   minValue: number;
   maxValue: number;
   initialValue: number;
+  debouncedInitialValue: number;
+  debouncedMaxValue: number;
   setMinValue: (value: number) => void;
   setMaxValue: (value: number) => void;
   setInitialValue: (value: number) => void;
@@ -17,6 +19,8 @@ const SliderControls: React.FC<SliderControlsProps> = ({
   minValue,
   maxValue,
   initialValue,
+  debouncedInitialValue,
+  debouncedMaxValue,
   setMinValue,
   setMaxValue,
   setInitialValue,
@@ -25,6 +29,14 @@ const SliderControls: React.FC<SliderControlsProps> = ({
   showDroplet,
   setShowDroplet,
 }) => {
+  const onChangeMaxVal = (val: number) => {
+    if (val <= minValue) {
+      setMaxValue(val);
+    } else {
+      setMaxValue(val);
+    }
+  };
+
   return (
     <div className="grid grid-cols-3 gap-4 items-center">
       <div className="flex gap-2 items-center">
@@ -36,7 +48,7 @@ const SliderControls: React.FC<SliderControlsProps> = ({
           max={maxValue - 1}
           onChange={(e) => {
             const value = Number(e.target.value);
-            if (value < maxValue) setMinValue(value); // Ensure minValue is less than maxValue
+            value < maxValue && setMinValue(value);
           }}
           className="border rounded p-1 w-20"
         />
@@ -48,9 +60,8 @@ const SliderControls: React.FC<SliderControlsProps> = ({
           value={maxValue}
           min={minValue + 1}
           onChange={(e) => {
-            // const value = Number(e.target.value);
-            // if (value > minValue)
-            setMaxValue(Number(e.target.value)); // Ensure maxValue is greater than minValue
+            const value = Number(e.target.value);
+            onChangeMaxVal(value);
           }}
           className="border rounded p-1 w-20"
         />
@@ -62,6 +73,11 @@ const SliderControls: React.FC<SliderControlsProps> = ({
           value={initialValue}
           min={minValue}
           max={maxValue}
+          onBlur={(e) => {
+            let value = Number(e.target.value);
+            (value > maxValue || value < minValue) &&
+              setInitialValue(debouncedInitialValue);
+          }}
           onChange={(e) => {
             // Number(e.target.value) <= maxValue &&
             setInitialValue(Number(e.target.value));
