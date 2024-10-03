@@ -59,6 +59,10 @@ const SliderControls: React.FC<SliderControlsProps> = ({
           type="number"
           value={maxValue}
           min={minValue + 1}
+          onBlur={(e) => {
+            let value = Number(e.target.value);
+            value <= minValue && setMaxValue(debouncedMaxValue);
+          }}
           onChange={(e) => {
             const value = Number(e.target.value);
             onChangeMaxVal(value);
